@@ -115,7 +115,9 @@ export class FileUtil {
             a.setAttribute('download', `transfer.${file.extension}`);
             document.body.append(a);
             // if you are so inclined to make it auto-download, do something like: a.click();
-            a.remove();
+            //a.remove();
+            console.log("Recieving file");
+            a.click();
         } else if (file.data.length > file.size) {
             file.receiving = false;
             Logger.Error(

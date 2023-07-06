@@ -96,6 +96,7 @@ export class Application {
     onColorModeChanged: UIOptions["onColorModeChanged"];
 
     protected _options : UIOptions;
+    
 
     /**
      * @param options - Initialization options
@@ -128,6 +129,8 @@ export class Application {
             this.uiFeaturesElement.appendChild(this.videoQpIndicator.rootElement);
         }
 
+        
+
         this.createButtons();
 
         this.registerCallbacks();
@@ -135,7 +138,22 @@ export class Application {
         this.showConnectOrAutoConnectOverlays();
 
         this.setColorMode(this.configUI.isCustomFlagEnabled(LightMode));
+        //I had to declare in the constructor the function I added --DEPRACATED
+        //this.myHandleResponseFunction(''{"opd":0, "type":"green"}''); //!Don't do this unless JSON.Parse will crash inside the function
+        this.stream.addResponseEventListener("handle_responses", this.myHandleResponseFunction); //TODO I had to add a Listener
     }
+
+    public myHandleResponseFunction(response: string): void { //TODO Added this and took off the => and put :
+		
+        
+
+        const pre = JSON.parse(response);
+        console.log(pre.opid);
+        console.log(pre.type);
+
+        
+        
+	}
 
     public createOverlays(): void {
         // build all of the overlays
@@ -166,6 +184,9 @@ export class Application {
         // set up the play overlays action
         this.playOverlay.onAction(() => this.stream.play());
     }
+
+
+    
 
     /**
      * Set up button click functions and button functionality
@@ -231,6 +252,16 @@ export class Application {
             const showFPSButton = new LabelledButton('Show FPS', 'Toggle');
             showFPSButton.addOnClickListener(() => {
                 this.stream.requestShowFps();
+                
+                console.log("OG emit");
+                const descriptor = {
+                        OGId: "053",
+                        OGName: "Dynasty",
+
+                };
+                
+                this.stream.emitUIInteraction(descriptor);
+
             });
 
             // Add button for restart stream
@@ -394,6 +425,8 @@ export class Application {
         return this._uiFeatureElement;
     }
 
+    
+    
     /**
      * Shows the disconnect overlay
      * @param updateText - the text that will be displayed in the overlay
@@ -685,4 +718,6 @@ export class Application {
             this.onColorModeChanged(isLightMode);
         }
     }
+
+    
 }
